@@ -103,6 +103,52 @@ EternaMate includes a comprehensive demo mode that works offline, allowing you t
 - Create companions and have conversations
 - Perfect for development and demonstrations
 
+## 🚀 Deployment
+
+### Frontend Deployment Options
+
+#### **Vercel (Recommended)**
+1. Fork or import this repository to Vercel
+2. Set root directory to `frontend`
+3. Add environment variables:
+   - `REACT_APP_BACKEND_URL`: Your backend URL
+
+#### **Netlify**
+1. Connect your GitHub repository
+2. Set build directory to `frontend`
+3. Deploy with automatic builds
+
+#### **Railway (Full-Stack)**
+1. Connect GitHub repository to Railway
+2. Deploy both frontend and backend together
+3. Configure environment variables for both services
+
+### Backend Deployment Options
+
+#### **Railway**
+- Deploy FastAPI backend with MongoDB
+- Configure environment variables:
+  - `OPENAI_API_KEY`: Your OpenAI API key
+  - `MONGO_URL`: MongoDB connection string
+
+#### **Render**
+- Free tier for FastAPI backend
+- Built-in PostgreSQL database options
+
+### Environment Variables Setup
+
+**Frontend (.env)**
+```env
+REACT_APP_BACKEND_URL=your_backend_url_here
+```
+
+**Backend (.env)**
+```env
+OPENAI_API_KEY=your_openai_api_key_here
+MONGO_URL=your_mongodb_connection_string
+DB_NAME=eternamate_db
+```
+
 ---
 
 **Made with 💕 by [Pallavi Dhawan](https://github.com/Pallavidhawan72)**
