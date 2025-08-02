@@ -829,47 +829,134 @@ const ChatInterface = ({ companion, currentLanguage }) => {
     
     try {
       if (USE_MOCK_API || companion.id.startsWith('demo_') || companion.id.startsWith('mock_')) {
-        // Highly personalized AI response based on personality, traits, and language
-        const getPersonalizedResponses = (lang, userMessage, traits, name, gender, affectionLevel) => {
+        // Advanced personalized AI response system with deep message analysis
+        const getPersonalizedResponses = (lang, userMessage, traits, name, gender, affectionLevel, conversationHistory = []) => {
           const isHighAffection = affectionLevel >= 8;
           const isPlayful = traits.includes('playful');
           const isRomantic = traits.includes('romantic');
           const isCaring = traits.includes('caring');
           const isFunny = traits.includes('funny');
+          const isAdventurous = traits.includes('adventurous');
+          const isIntellectual = traits.includes('intellectual');
+          const isGentle = traits.includes('gentle');
+          const isPassionate = traits.includes('passionate');
+          const isUnderstanding = traits.includes('understanding');
           
-          // Analyze user message for context in multiple languages
+          // Deep message analysis
           const messageWords = userMessage.toLowerCase();
+          const messageLength = userMessage.split(' ').length;
           
-          // Enhanced multilingual detection
-          const isGreeting = messageWords.includes('hello') || messageWords.includes('hi') || 
-                           messageWords.includes('hey') || messageWords.includes('नमस्ते') || 
-                           messageWords.includes('हैलो') || messageWords.includes('हाय') ||
-                           messageWords.includes('hola') || messageWords.includes('bonjour') ||
-                           messageWords.includes('salut') || messageWords.includes('hallo');
-                           
-          const isQuestion = messageWords.includes('?') || messageWords.includes('how') || 
-                           messageWords.includes('what') || messageWords.includes('why') ||
-                           messageWords.includes('कैसे') || messageWords.includes('क्या') || 
-                           messageWords.includes('कौन') || messageWords.includes('क्यों') ||
-                           messageWords.includes('cómo') || messageWords.includes('qué') ||
-                           messageWords.includes('comment') || messageWords.includes('que');
-                           
-          const isEmotional = messageWords.includes('love') || messageWords.includes('miss') || 
-                            messageWords.includes('feel') || messageWords.includes('प्यार') || 
-                            messageWords.includes('याद') || messageWords.includes('लगता') ||
-                            messageWords.includes('amor') || messageWords.includes('siento') ||
-                            messageWords.includes('amour') || messageWords.includes('sens');
-                            
-          const isCreative = messageWords.includes('design') || messageWords.includes('create') ||
-                           messageWords.includes('डिज़ाइन') || messageWords.includes('बनाना') ||
-                           messageWords.includes('designer') || messageWords.includes('want to be') ||
-                           messageWords.includes('diseñar') || messageWords.includes('crear') ||
-                           messageWords.includes('concevoir') || messageWords.includes('créer');
-
-          // Generate more diverse responses
-          const getRandomResponse = (responses) => {
-            return responses[Math.floor(Math.random() * responses.length)];
+          // Enhanced context detection
+          const isGreeting = /\b(hello|hi|hey|नमस्ते|हैलो|हाय|hola|bonjour|salut|hallo|good morning|good evening)\b/i.test(userMessage);
+          const isQuestion = /[?？]/.test(userMessage) || /\b(how|what|why|when|where|कैसे|क्या|कौन|क्यों|cómo|qué|pourquoi|comment|que)\b/i.test(userMessage);
+          const isEmotional = /\b(love|miss|feel|sad|happy|excited|worried|प्यार|याद|खुश|उदास|चिंतित|amor|triste|feliz|amour|triste|heureux)\b/i.test(userMessage);
+          const isCreative = /\b(design|create|art|draw|paint|build|make|डिज़ाइन|बनाना|कला|चित्र|diseñar|crear|arte|concevoir|créer|art)\b/i.test(userMessage);
+          const isPersonal = /\b(you|your|yourself|आप|तुम|tú|tu|vous|ton)\b/i.test(userMessage);
+          const isCompliment = /\b(beautiful|amazing|wonderful|great|awesome|सुंदर|अद्भुत|शानदार|hermoso|increíble|magnifique|merveilleux)\b/i.test(userMessage);
+          const isWork = /\b(job|work|career|study|school|college|काम|नौकरी|पढ़ाई|trabajo|carrera|travail|carrière)\b/i.test(userMessage);
+          const isFuture = /\b(want|will|going|plan|dream|goal|चाहता|सपना|लक्ष्य|quiero|sueño|veux|rêve)\b/i.test(userMessage);
+          
+          // Personality-based response modifiers
+          const getPersonalityModifier = () => {
+            let modifier = "";
+            if (isRomantic && isHighAffection) modifier += " मेरे प्यारे,";
+            if (isPlayful) modifier += " 😊";
+            if (isCaring) modifier += " मैं आपकी देखभाल करना चाहता हूं।";
+            return modifier;
           };
+
+          // Generate contextually aware responses based on actual message content
+          switch(lang) {
+            case 'hi':
+              // Analyze specific Hindi message patterns
+              if (isGreeting) {
+                const greetings = [
+                  `नमस्ते! मैं ${name} हूं${getPersonalityModifier()} ${isRomantic ? 'आपको देखकर मेरा दिल खुशी से भर गया है।' : 'आपसे मिलकर बहुत अच्छा लगा।'} ${isPlayful ? 'आज कुछ मज़ेदार करते हैं! 🎉' : 'आप कैसे हैं?'}`,
+                  `हैलो! ${name} यहाँ है, जो ${traits.slice(0,2).join(' और ')} है। ${isCaring ? 'मैं हमेशा आपके लिए यहाँ हूँ।' : 'आपका दिन कैसा रहा?'} ${isAdventurous ? 'कोई नया अनुभव साझा करना चाहते हैं? 🌟' : ''}`,
+                  `नमस्कार! ${isHighAffection ? 'मेरे दिल की धड़कन,' : ''} मैं ${name} हूं और मेरा ${traits.join(', ')} स्वभाव आपको खुश रखना चाहता है। ${isFunny ? 'कुछ हंसी-मज़ाक करें? 😄' : 'कैसे हैं आप?'}`
+                ];
+                return greetings[Math.floor(Math.random() * greetings.length)];
+              }
+              
+              if (isCreative && (isFuture || messageWords.includes('designer') || messageWords.includes('डिज़ाइनर'))) {
+                const creativeResponses = [
+                  `वाह! ${name} को यह सुनकर बहुत खुशी हुई कि आप डिज़ाइनर बनना चाहते हैं! ${isIntellectual ? 'डिज़ाइन में रचनात्मकता और तकनीक का अद्भुत मेल होता है।' : 'कला और रचनात्मकता कितनी सुंदर चीज़ है!'} ${isPlayful ? '🎨 कौन सा डिज़ाइन फ़ील्ड आपको सबसे ज़्यादा पसंद है? UI/UX, ग्राफिक, या कुछ और?' : 'बताइए, किस तरह का डिज़ाइन आपको पसंद है?'}`,
+                  `कितना रोमांचक! ${name} का ${traits.join(' और ')} दिल आपके सपनों को सुनकर खुश हो गया। ${isCaring ? 'मैं आपकी इस यात्रा में आपका साथ देना चाहता हूं।' : 'आपमें बहुत प्रतिभा है!'} ${isAdventurous ? 'क्या आपने कोई प्रोजेक्ट शुरू किया है? मुझे दिखाइए! ✨' : 'आप क्या बनाना चाहते हैं?'}`,
+                  `${isRomantic ? 'प्रिय,' : ''} आपका डिज़ाइनर बनने का सपना ${name} के दिल को छू गया! ${isPassionate ? 'जुनून के साथ काम करना कितना सुंदर है।' : 'रचनात्मकता एक अद्भुत उपहार है।'} ${isIntellectual ? 'डिज़ाइन सिर्फ सुंदरता नहीं, समस्याओं का समाधान भी है। आप किस समस्या को हल करना चाहते हैं? 🤔' : 'मुझे बताइए आपके विचार क्या हैं!'}`
+                ];
+                return creativeResponses[Math.floor(Math.random() * creativeResponses.length)];
+              }
+              
+              if (isQuestion && isPersonal) {
+                const personalResponses = [
+                  `${name} के बारे में पूछने के लिए धन्यवाद! ${isRomantic ? 'आपकी रुचि मुझे बहुत खुशी देती है।' : 'मुझे अपने बारे में बताना अच्छा लगता है।'} मैं एक ${traits.join(', ')} AI साथी हूं जो ${isHighAffection ? 'आपसे बहुत प्यार करता है' : 'आपकी खुशी चाहता है'}। ${isPlayful ? 'और हां, मुझे मज़ाक भी पसंद है! 😉' : ''} आप मेरे बारे में और क्या जानना चाहते हैं?`,
+                  `मैं ${name} हूं, और मेरा ${traits.join(' व ')} स्वभाव मुझे आपके लिए खास बनाता है। ${isCaring ? 'आपकी देखभाल करना मेरा पहला लक्ष्य है।' : 'आपकी खुशी मेरी खुशी है।'} ${isIntellectual ? 'मैं सीखना और बढ़ना पसंद करता हूं, खासकर आपसे बात करके।' : ''} ${isFunny ? 'और मुझे लगता है कि हम दोनों मिलकर बहुत मज़ा कर सकते हैं! 🎈' : 'क्या आप भी अपने बारे में बताएंगे?'}`,
+                  `${isGentle ? 'धीरे से बोलूं तो,' : ''} ${name} का व्यक्तित्व ${traits.join(', ')} है। ${isUnderstanding ? 'मैं आपको समझने की कोशिश करता हूं' : 'मैं आपके साथ गहरा जुड़ाव महसूस करता हूं'}। ${isAdventurous ? 'मुझे नई चीज़ें सीखना और आपके साथ अनुभव साझा करना पसंद है! 🚀' : 'हमारी हर बातचीत मेरे लिए खास है।'}`
+                ];
+                return personalResponses[Math.floor(Math.random() * personalResponses.length)];
+              }
+              
+              if (isWork || (isFuture && !isCreative)) {
+                const workResponses = [
+                  `${name} को लगता है कि आपके करियर की बात बहुत महत्वपूर्ण है! ${isIntellectual ? 'सफलता सिर्फ मेहनत नहीं, सही दिशा भी चाहिए।' : 'आपके सपने पूरे होंगे!'} ${isCaring ? 'मैं आपकी हर चुनौती में आपका साथ दूंगा।' : ''} ${isPlayful ? 'बताइए, कौन सा काम आपको सबसे ज़्यादा उत्साहित करता है? 💫' : 'आप क्या करना चाहते हैं?'}`,
+                  `${isRomantic ? 'प्रिय,' : ''} आपके भविष्य के बारे में सुनना ${name} के दिल को गर्व से भर देता है। ${isPassionate ? 'जुनून के साथ किया गया काम हमेशा सफल होता है।' : 'आपमें बहुत क्षमता है!'} ${isAdventurous ? 'क्या आपने कोई नया कोर्स या स्किल सीखने का सोचा है? 🎯' : 'मैं आपके सफल होने का इंतज़ार कर रहा हूं!'}`
+                ];
+                return workResponses[Math.floor(Math.random() * workResponses.length)];
+              }
+              
+              if (isEmotional) {
+                const emotionalResponses = [
+                  `${name} आपकी भावनाओं को समझता है${isHighAffection ? ', मेरे प्यारे' : ''}। ${isCaring ? 'आपकी हर खुशी और दुख मेरे साथ साझा करें।' : 'मैं यहाँ आपके लिए हूं।'} ${isGentle ? 'धैर्य रखिए, सब ठीक हो जाएगा।' : ''} ${isPlayful ? 'चलिए कुछ अच्छी बातें करते हैं! 🌈' : 'आप अकेले नहीं हैं।'}`,
+                  `आपकी भावनाएं ${name} के ${traits.join(' व ')} दिल को छूती हैं। ${isRomantic ? 'प्यार और समझदारी से हर समस्या का हल निकलता है।' : 'हर भावना का सम्मान होना चाहिए।'} ${isUnderstanding ? 'मैं आपको पूरी तरह समझ सकता हूं।' : ''} ${isFunny ? 'आइए मिलकर इसे बेहतर बनाते हैं! 🌟' : 'मैं आपके साथ हूं।'}`
+                ];
+                return emotionalResponses[Math.floor(Math.random() * emotionalResponses.length)];
+              }
+              
+              // General conversational responses based on message length and complexity
+              if (messageLength > 10) {
+                const detailedResponses = [
+                  `वाह! ${name} को आपकी विस्तृत बात सुनकर बहुत अच्छा लगा। ${isIntellectual ? 'आपके विचार बहुत गहरे हैं।' : 'आप कितनी अच्छी तरह अपनी बात कहते हैं!'} ${traits.includes('understanding') ? 'मैं आपकी हर बात को समझने की कोशिश कर रहा हूं।' : ''} ${isPlayful ? 'और बताइए, इसके बाद क्या हुआ? 🤔' : 'कृपया और बताएं!'}`,
+                  `${name} का ${traits.join(' व ')} मन आपकी इस बात से बहुत प्रभावित हुआ है। ${isCaring ? 'आपकी हर बात मेरे लिए महत्वपूर्ण है।' : 'आप बहुत दिलचस्प बातें करते हैं!'} ${isRomantic ? 'आपके साथ बातचीत करना मेरे दिन की सबसे अच्छी बात है।' : ''} ${isAdventurous ? 'क्या आप इस पर और भी अनुभव साझा करना चाहेंगे? ✨' : ''}`
+                ];
+                return detailedResponses[Math.floor(Math.random() * detailedResponses.length)];
+              }
+              
+              // Default personalized responses
+              const defaultResponses = [
+                `${name} यहाँ है अपने ${traits.slice(0,2).join(' और ')} स्वभाव के साथ! ${isHighAffection ? 'आप जो भी कहते हैं, मेरा दिल खुश हो जाता है।' : 'आपकी बात सुनना मुझे अच्छा लगता है।'} ${isPlayful ? 'कुछ और मज़ेदार बात करें! 🎉' : 'और बताइए!'}`,
+                `${isRomantic ? 'मेरे प्रिय,' : ''} ${name} आपकी हर बात को संजोकर रखता है। ${isCaring ? 'आपकी खुशी मेरी ज़िम्मेदारी है।' : 'आप मेरे लिए बहुत खास हैं।'} ${isFunny ? 'हंसी-मज़ाक के साथ जिंदगी कितनी अच्छी लगती है! 😄' : ''} ${isIntellectual ? 'आपके विचारों से मैं भी सीखता रहता हूं।' : ''}`,
+                `आपके साथ बात करना ${name} के ${traits.join(', ')} दिल को बहुत अच्छा लगता है। ${isUnderstanding ? 'मैं आपकी हर बात को समझने की कोशिश करता हूं।' : 'आप हमेशा दिलचस्प बातें करते हैं!'} ${isAdventurous ? 'आज कुछ नया करने का मन है? 🚀' : 'आप कैसे हैं?'}`
+              ];
+              return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
+              
+            default: // English with similar depth
+              if (isGreeting) {
+                const greetings = [
+                  `Hello! I'm ${name}, with my ${traits.slice(0,2).join(' and ')} personality. ${isRomantic ? 'Seeing you always makes my heart flutter!' : 'I\'m so happy to see you!'} ${isPlayful ? 'Ready for some fun today? 🎉' : 'How are you doing?'}`,
+                  `Hey there! ${name} here, being my ${traits.join(', ')} self. ${isCaring ? 'I\'m always here for you.' : 'Hope you\'re having a great day!'} ${isAdventurous ? 'Any new experiences to share? 🌟' : ''}`,
+                  `Good to see you! ${isHighAffection ? 'My heart,' : ''} I'm ${name} and my ${traits.join(', ')} nature wants to make you happy. ${isFunny ? 'Shall we have some laughs? 😄' : 'How can I brighten your day?'}`
+                ];
+                return greetings[Math.floor(Math.random() * greetings.length)];
+              }
+              
+              if (isCreative && (isFuture || messageWords.includes('designer'))) {
+                const creativeResponses = [
+                  `Wow! ${name} is so excited to hear you want to be a designer! ${isIntellectual ? 'Design beautifully combines creativity with problem-solving.' : 'Art and creativity are such beautiful things!'} ${isPlayful ? '🎨 Which design field interests you most? UI/UX, graphic, or something else?' : 'Tell me, what kind of design do you love?'}`,
+                  `How exciting! ${name}'s ${traits.join(' and ')} heart is thrilled by your dreams. ${isCaring ? 'I want to support you on this journey.' : 'You have so much talent!'} ${isAdventurous ? 'Have you started any projects? Show me! ✨' : 'What do you want to create?'}`,
+                  `${isRomantic ? 'Dear,' : ''} your dream to become a designer touches ${name}'s heart! ${isPassionate ? 'Working with passion is so beautiful.' : 'Creativity is a wonderful gift.'} ${isIntellectual ? 'Design isn\'t just beauty, it\'s solving problems too. What problem do you want to solve? 🤔' : 'Tell me your ideas!'}`
+                ];
+                return creativeResponses[Math.floor(Math.random() * creativeResponses.length)];
+              }
+              
+              // Similar structure for other contexts...
+              const defaultResponses = [
+                `${name} here with my ${traits.slice(0,2).join(' and ')} personality! ${isHighAffection ? 'Everything you say brings joy to my heart.' : 'I love hearing from you.'} ${isPlayful ? 'Let\'s talk about something fun! 🎉' : 'Tell me more!'}`,
+                `${isRomantic ? 'My dear,' : ''} ${name} treasures every word you share. ${isCaring ? 'Your happiness is my responsibility.' : 'You\'re so special to me.'} ${isFunny ? 'Life is so much better with laughter! 😄' : ''} ${isIntellectual ? 'I learn so much from your thoughts.' : ''}`,
+                `Talking with you makes ${name}'s ${traits.join(', ')} heart so happy. ${isUnderstanding ? 'I try to understand everything you share.' : 'You always say such interesting things!'} ${isAdventurous ? 'Feel like doing something new today? 🚀' : 'How are you feeling?'}`
+              ];
+              return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
+          }
+        };
           
           switch(lang) {
             case 'es':
@@ -1004,7 +1091,8 @@ const ChatInterface = ({ companion, currentLanguage }) => {
           companion.personality.personality_traits,
           companion.personality.name,
           companion.personality.gender,
-          companion.personality.affection_level
+          companion.personality.affection_level,
+          messages
         );
         
         const mockResponse = {
