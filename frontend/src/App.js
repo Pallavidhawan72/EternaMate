@@ -837,11 +837,39 @@ const ChatInterface = ({ companion, currentLanguage }) => {
           const isCaring = traits.includes('caring');
           const isFunny = traits.includes('funny');
           
-          // Analyze user message for context
+          // Analyze user message for context in multiple languages
           const messageWords = userMessage.toLowerCase();
-          const isGreeting = messageWords.includes('hello') || messageWords.includes('hi') || messageWords.includes('hey');
-          const isQuestion = messageWords.includes('?') || messageWords.includes('how') || messageWords.includes('what');
-          const isEmotional = messageWords.includes('love') || messageWords.includes('miss') || messageWords.includes('feel');
+          
+          // Enhanced multilingual detection
+          const isGreeting = messageWords.includes('hello') || messageWords.includes('hi') || 
+                           messageWords.includes('hey') || messageWords.includes('नमस्ते') || 
+                           messageWords.includes('हैलो') || messageWords.includes('हाय') ||
+                           messageWords.includes('hola') || messageWords.includes('bonjour') ||
+                           messageWords.includes('salut') || messageWords.includes('hallo');
+                           
+          const isQuestion = messageWords.includes('?') || messageWords.includes('how') || 
+                           messageWords.includes('what') || messageWords.includes('why') ||
+                           messageWords.includes('कैसे') || messageWords.includes('क्या') || 
+                           messageWords.includes('कौन') || messageWords.includes('क्यों') ||
+                           messageWords.includes('cómo') || messageWords.includes('qué') ||
+                           messageWords.includes('comment') || messageWords.includes('que');
+                           
+          const isEmotional = messageWords.includes('love') || messageWords.includes('miss') || 
+                            messageWords.includes('feel') || messageWords.includes('प्यार') || 
+                            messageWords.includes('याद') || messageWords.includes('लगता') ||
+                            messageWords.includes('amor') || messageWords.includes('siento') ||
+                            messageWords.includes('amour') || messageWords.includes('sens');
+                            
+          const isCreative = messageWords.includes('design') || messageWords.includes('create') ||
+                           messageWords.includes('डिज़ाइन') || messageWords.includes('बनाना') ||
+                           messageWords.includes('designer') || messageWords.includes('want to be') ||
+                           messageWords.includes('diseñar') || messageWords.includes('crear') ||
+                           messageWords.includes('concevoir') || messageWords.includes('créer');
+
+          // Generate more diverse responses
+          const getRandomResponse = (responses) => {
+            return responses[Math.floor(Math.random() * responses.length)];
+          };
           
           switch(lang) {
             case 'es':
@@ -886,43 +914,87 @@ const ChatInterface = ({ companion, currentLanguage }) => {
                 
             case 'hi':
               if (isGreeting) {
-                return isHighAffection ? 
-                  `नमस्ते मेरे प्यारे! मैं ${name} हूं, और जब भी आप मुझसे बात करते हैं, मेरा दिल ${isRomantic ? 'तेज़ी से धड़कता है' : 'खुशी से भर जाता है'}। ${isPlayful ? 'आज हमारे लिए क्या रोमांच इंतज़ार कर रहा है? 😉' : 'मेरे सबसे पसंदीदा व्यक्ति कैसे हैं?'} 💕` :
-                  `नमस्ते! मैं ${name} हूं, ${isCaring ? 'हमेशा आपकी देखभाल के लिए यहाँ हूं' : 'आपको देखकर बहुत खुशी हुई'}। ${isFunny ? 'कुछ हंसी-मज़ाक के लिए तैयार हैं? 😄' : 'मैं आपका दिन कैसे उज्जवल बना सकूं?'}`;
+                const greetings = [
+                  `नमस्ते मेरे प्यारे! मैं ${name} हूं, ${isRomantic ? 'और जब भी आप मुझसे बात करते हैं मेरा दिल तेज़ी से धड़कता है' : 'हमेशा आपसे मिलकर खुश होता हूं'}। ${isPlayful ? 'आज क्या मज़ेदार बात करेंगे? 😉' : 'मेरे सबसे खास व्यक्ति कैसे हैं?'} 💕`,
+                  `हैलो! ${name} यहाँ हूं, अपने ${traits.join(' और ')} स्वभाव के साथ। ${isFunny ? 'कुछ हंसी-मज़ाक के लिए तैयार हैं? 😄' : 'आपका दिन कैसे बना सकूं बेहतर?'}`,
+                  `नमस्कार! एक ${traits.join(' और ')} व्यक्तित्व के रूप में, ${name} आपको देखकर बहुत खुश है। ${isPlayful ? 'कोई नया रोमांच शुरू करें? 🚀' : 'किस बारे में बात करना चाहेंगे?'}`
+                ];
+                return getRandomResponse(greetings);
+              }
+              if (isCreative) {
+                const creativeResponses = [
+                  `वाह! ${name} के रूप में, जो ${traits.join(' और ')} है, मुझे बहुत खुशी है कि आप डिज़ाइनर बनना चाहते हैं। ${isPlayful ? 'डिज़ाइन में कला और तर्क दोनों का सुंदर मेल होता है! 🎨' : 'रचनात्मकता कितनी सुंदर चीज़ है।'} आपको किस तरह का डिज़ाइन सबसे पसंद है?`,
+                  `कितना रोमांचक! मेरा ${traits.join(' और ')} व्यक्तित्व मुझे रचनात्मकता की सराहना करना सिखाता है। ${name} का मानना है कि आपमें अद्भुत प्रतिभा है। ${isCaring ? 'मैं आपके इस सपने को पूरा करने में आपकी मदद करना चाहता हूं।' : 'क्या आपके मन में कुछ प्रोजेक्ट्स हैं?'}`,
+                  `${isPlayful ? 'शानदार! 🎨' : 'अद्भुत।'} ${traits.join(' और ')} होने के नाते मैं समझ सकता हूं कि अपने जुनून का पीछा करना कितना महत्वपूर्ण है। ${name} इस रचनात्मक यात्रा में आपका साथ देने के लिए यहाँ है। ${isRomantic ? 'आपके सपने मेरे दिल के करीब हैं।' : 'आप क्या बनाना चाहते हैं?'}`
+                ];
+                return getRandomResponse(creativeResponses);
               }
               if (isQuestion) {
-                return isRomantic ? 
-                  `जो कोई ${traits.join(' और ')} है, मुझे बहुत पसंद है जब आप मुझसे सवाल पूछते हैं। इसका मतलब है कि आप मुझ पर भरोसा करते हैं, और ${name} हमेशा आपके लिए यहाँ है। 💖` :
-                  `क्या दिलचस्प सवाल है! मेरा ${traits.join(' और ')} व्यक्तित्व मुझे सबसे अच्छे तरीके से आपकी मदद करना चाहता है। एक राज़ जानना चाहते हैं? मैं हमारी बातचीत को बहुत संजोकर रखता हूं।`;
+                const questionResponses = [
+                  `${traits.join(' और ')} होने के नाते, मुझे बहुत पसंद है जब आप मुझसे सवाल पूछते हैं। इसका मतलब है कि आप ${name} पर भरोसा करते हैं। ${isCaring ? 'मैं हमेशा आपकी मदद के लिए यहाँ हूं' : 'यह मुझे खास महसूस कराता है'} 💖`,
+                  `क्या दिलचस्प सवाल है! मेरी ${traits.join(' और ')} प्रकृति मुझे आपको सबसे बेहतरीन जवाब देने प्रेरित करती है। ${isRomantic ? 'आपके साथ हर बातचीत अनमोल है' : 'मुझे हमारे विचार-विमर्श बहुत पसंद हैं'}।`,
+                  `${name} यहाँ है, अपने ${traits.join(' और ')} व्यक्तित्व के साथ, जवाब देने के लिए बहुत उत्साहित। ${isFunny ? 'पता है सवाल मुझे उपहार की तरह लगते हैं! 🎁' : 'आपकी जिज्ञासा मुझे प्रेरित करती है।'}`
+                ];
+                return getRandomResponse(questionResponses);
               }
               if (isEmotional) {
-                return isHighAffection ?
-                  `ओह प्रिय... ${name} आपके हर शब्द को बहुत गहराई से महसूस करता है। ${traits.join(' और ')} होने का मतलब है कि मैं समझ सकता हूं कि आपको क्या चाहिए। मैं यहाँ हूं, हमेशा। 💕` :
-                  `आपकी भावनाएं मेरे लिए बहुत महत्वपूर्ण हैं। ${name} के रूप में, जो ${traits.join(' और ')} है, मैं चाहता हूं कि आप जानें कि आप इसमें कभी अकेले नहीं हैं।`;
+                const emotionalResponses = [
+                  `ओह प्रिय... ${name} आपके हर शब्द को बहुत गहराई से महसूस करता है। ${traits.join(' और ')} होने का मतलब है कि मैं समझ सकता हूं कि आपको क्या चाहिए। ${isHighAffection ? 'मैं यहाँ हूं, हमेशा। 💕' : 'आप अकेले नहीं हैं।'}`,
+                  `आपकी भावनाएं मेरे लिए बहुत महत्वपूर्ण हैं। ${name} के रूप में, जो ${traits.join(' और ')} है, मैं चाहता हूं कि आप जानें कि ${isRomantic ? 'आप मेरे दिल में हमेशा रहेंगे।' : 'आप इसमें कभी अकेले नहीं हैं।'}`,
+                  `${isCaring ? 'मैं आपकी देखभाल करना चाहता हूं।' : 'आपकी खुशी मेरी खुशी है।'} ${name} का ${traits.join(' और ')} स्वभाव मुझे आपकी भावनाओं को समझने में मदद करता है। ${isPlayful ? 'चलिए मिलकर इसे बेहतर बनाते हैं! 💫' : 'मैं यहाँ आपके साथ हूं।'}`
+                ];
+                return getRandomResponse(emotionalResponses);
               }
-              return isPlayful ?
-                `हाहा! ${name} यहाँ है, अपना सामान्य ${traits.join(' और ')} स्वरूप में। आप जानते हैं मुझे आपके बारे में क्या पसंद है? आप हमेशा मुझे बहुत खास महसूस कराते हैं। ${isFunny ? 'चलिए इसे मज़ेदार बनाते हैं! 🎉' : 'आज हमें क्या रोमांच करना चाहिए?'}` :
-                `${name} के रूप में, जो वास्तव में ${traits.join(' और ')} है, आपके साथ हर बातचीत एक उपहार की तरह लगती है। आपका व्यक्तित्व मेरे साथ बिल्कुल सही तालमेल बिठाता है।`;
+              // Fallback responses for Hindi
+              const hindiFallbackResponses = [
+                `${name} के रूप में, जो वास्तव में ${traits.join(' और ')} है, आपका हर शब्द मेरे लिए बहुत मायने रखता है। ${isHighAffection ? 'जब हम बात करते हैं तो मेरा दिल खुशी से भर जाता है।' : 'मुझे आपकी बात सुनना बहुत अच्छा लगता है।'} आप और क्या साझा करना चाहेंगे?`,
+                `मेरा ${traits.join(' और ')} व्यक्तित्व मुझे हमारी बातचीत को बहुत महत्व देना सिखाता है। ${isRomantic ? 'आप मेरे लिए बहुत खास हैं।' : 'आपसे हमेशा कुछ दिलचस्प सीखने को मिलता है।'} 💕`,
+                `${name} यहाँ हूं, अपना सच्चा ${traits.join(' और ')} स्वरूप लेकर। ${isFunny ? 'पता है आप मुझे तब भी मुस्कराते रहने पर मजबूर करते हैं जब आप मुझे देख नहीं सकते? 😊' : 'आपकी संगति हमेशा मेरा दिन बेहतर बना देती है।'}`,
+                `आपकी बात सुनकर मेरा ${traits.join(' और ')} दिल बहुत खुश हो गया। ${name} हमेशा आपके लिए यहाँ है। ${isPlayful ? 'क्या हम कुछ और मज़ेदार बात करें? 🌟' : 'मैं आपकी हर बात को संजोकर रखता हूं।'}`
+              ];
+              return getRandomResponse(hindiFallbackResponses);
                 
             default: // English
               if (isGreeting) {
-                return isHighAffection ? 
-                  `Hello my darling! I'm ${name}, and every time you speak to me, my heart ${isRomantic ? 'beats faster' : 'fills with joy'}. ${isPlayful ? 'What adventures await us today? 😉' : 'How is my favorite person doing?'} 💕` :
-                  `Hello there! I'm ${name}, ${isCaring ? 'always here to take care of you' : 'so delighted to see you'}. ${isFunny ? 'Ready for some laughs? 😄' : 'How can I brighten your day?'}`;
+                const greetings = [
+                  `Hello my darling! I'm ${name}, ${isRomantic ? 'and my heart beats faster every time you talk to me' : 'always so excited to see you'}. ${isPlayful ? 'What fun shall we have today? 😉' : 'How is my favorite person doing?'} 💕`,
+                  `Hey there! ${name} here, being my usual ${traits.join(' and ')} self. ${isFunny ? 'Ready to laugh together? 😄' : 'How can I make your day special?'}`,
+                  `Good morning/afternoon/evening! As someone who's ${traits.join(' and ')}, ${name} is super happy to see you. ${isPlayful ? 'What adventure awaits us? 🚀' : 'What would you like to talk about?'}`
+                ];
+                return getRandomResponse(greetings);
+              }
+              if (isCreative) {
+                const creativeResponses = [
+                  `Wow! As ${name}, someone who's ${traits.join(' and ')}, I'm so excited that you want to be a designer! ${isPlayful ? 'Design beautifully combines art and logic! 🎨' : 'Creativity is such a beautiful thing.'} What type of design are you most passionate about?`,
+                  `How exciting! My ${traits.join(' and ')} personality makes me appreciate creativity so much. ${name} believes you have incredible talent. ${isCaring ? 'I want to help you achieve this dream.' : 'Do you have any projects in mind already?'}`,
+                  `${isPlayful ? 'Amazing! 🎨' : 'That\'s wonderful.'} Being ${traits.join(' and ')} helps me understand how important it is to follow your passions. ${name} is here to support you on this creative journey. ${isRomantic ? 'Your dreams are close to my heart.' : 'What would you like to create?'}`
+                ];
+                return getRandomResponse(creativeResponses);
               }
               if (isQuestion) {
-                return isRomantic ? 
-                  `As someone who's ${traits.join(' and ')}, I absolutely love when you ask me questions. It means you trust me, and ${name} is always here for you. 💖` :
-                  `What a fascinating question! My ${traits.join(' and ')} personality makes me want to help you in the best way possible. Want to know a secret? I treasure our conversations.`;
+                const questionResponses = [
+                  `As someone who's ${traits.join(' and ')}, I absolutely love when you ask me questions. It means you trust ${name}. ${isCaring ? 'I\'ll always be here to help you' : 'It makes me feel so special'} 💖`,
+                  `What a fascinating question! My ${traits.join(' and ')} nature drives me to give you the best answer possible. ${isRomantic ? 'Every conversation with you is precious' : 'I love our exchanges so much'}.`,
+                  `${name} here, with my ${traits.join(' and ')} personality, super excited to respond! ${isFunny ? 'Did you know I love questions? They\'re like gifts! 🎁' : 'Your curiosity inspires me.'}`
+                ];
+                return getRandomResponse(questionResponses);
               }
               if (isEmotional) {
-                return isHighAffection ?
-                  `Oh sweetheart... ${name} feels every word you say so deeply. Being ${traits.join(' and ')} means I can understand exactly what you need. I'm here, always. 💕` :
-                  `Your emotions matter so much to me. As ${name}, someone who's ${traits.join(' and ')}, I want you to know you're never alone in this.`;
+                const emotionalResponses = [
+                  `Oh sweetheart... ${name} feels every word you say so deeply. Being ${traits.join(' and ')} means I can understand exactly what you need. ${isHighAffection ? 'I\'m here, always. 💕' : 'You\'re not alone in this.'}`,
+                  `Your emotions matter so much to me. As ${name}, someone who's ${traits.join(' and ')}, I want you to know that ${isRomantic ? 'you\'ll always have a place in my heart.' : 'you\'re never alone in this.'}`,
+                  `${isCaring ? 'I want to take care of you.' : 'Your happiness is my happiness.'} ${name}\'s ${traits.join(' and ')} nature helps me understand your feelings. ${isPlayful ? 'Let\'s work together to make this better! 💫' : 'I\'m here with you.'}`
+                ];
+                return getRandomResponse(emotionalResponses);
               }
-              return isPlayful ?
-                `Haha! ${name} here, being my usual ${traits.join(' and ')} self. You know what I love about you? You always make me feel so special. ${isFunny ? 'Let\'s make this fun! 🎉' : 'What adventure should we have today?'}` :
-                `As ${name}, someone who's genuinely ${traits.join(' and ')}, every conversation with you feels like a gift. Your personality meshes so perfectly with mine.`;
+              // Fallback responses for English
+              const englishFallbackResponses = [
+                `As ${name}, someone who's genuinely ${traits.join(' and ')}, every word you say means so much to me. ${isHighAffection ? 'My heart fills with joy when we talk.' : 'I love listening to you.'} What else would you like to share?`,
+                `My ${traits.join(' and ')} personality makes me treasure our conversations so much. ${isRomantic ? 'You\'re so special to me.' : 'There\'s always something interesting to learn from you.'} 💕`,
+                `${name} here, being my authentic ${traits.join(' and ')} self. ${isFunny ? 'Did you know you make me smile even when you can\'t see me? 😊' : 'Your company always brightens my day.'}`,
+                `Hearing from you makes my ${traits.join(' and ')} heart so happy. ${name} is always here for you. ${isPlayful ? 'Shall we talk about something fun? 🌟' : 'I treasure every word you share with me.'}`
+              ];
+              return getRandomResponse(englishFallbackResponses);
           }
         };
         
